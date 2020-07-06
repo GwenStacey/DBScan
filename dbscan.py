@@ -6,11 +6,11 @@ class DBScan():
     DBScan algorithm. 
     My algorithm will return labels for clusters, -1 indicating
     an outlier"""
-    def __init__(self, data, max_dist, min_pts):
-        self.data = data
+    def __init__(self, max_dist, min_pts):
+        self.data = None
         self.max_dist = max_dist
         self.min_pts = min_pts
-        self.labels = [0] * len(data)
+        self.labels = None
     """The following list will hold the final label assignments
     I'll initialize it with 0's, but cluster assignment will start
     at 1"""
@@ -19,7 +19,9 @@ class DBScan():
     """Next for each point P in data, I'll run a function to 
     determine if a point is a valid seed, then fill out the cluster
     with reachable points"""
-    def fit(self):
+    def fit(self, data):
+        self.data = data
+        self.labels = [0] * len(self.data)
         cluster = 0
         for P in range(0,len(self.data)):
             reachable = self.find_reachable(P)
@@ -36,7 +38,7 @@ class DBScan():
     def predict(self, P):
         """Given a new point of data, P assign it a cluster label"""
         for i in range(0, len, self.data):
-            if cdist(np.reshape(self.data[P],(-1,2)), np.reshape(self.data[i],(-1,2))) < self.max_dist:
+            if cdist(np.reshape(P,(-1,2)), np.reshape(self.data[i],(-1,2))) < self.max_dist:
                 return self.labels[i]
 
     def create_cluster(self, P, cluster, reachable):
